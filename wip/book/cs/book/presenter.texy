@@ -189,7 +189,7 @@ class TaskPresenter extends BasePresenter
 /** @var @var Todo\ListRepository */
 private $listRepository;
 
-protected function startup()
+protected function startup(): void
 {
 	parent::startup();
 	$this->listRepository = $this->context->listRepository;
@@ -201,10 +201,10 @@ V `TaskPresenter`u budeme chtít zobrazit jeden konkrétní seznam úkolů. Sezn
 /--php
 // class TaskPresenter
 
-/** @var \Nette\Database\Table\ActiveRow */
+/** @var Nette\Database\Table\ActiveRow */
 private $list;
 
-public function actionDefault($id)
+public function actionDefault(int $id): void
 {
 	$this->list = $this->listRepository->find($id);
 }
@@ -285,13 +285,13 @@ Menu bude společné pro všechny části aplikace. Žhavý kandidát na umíst�
 /** @var Todo\ListRepository */
 private $listRepository;
 
-protected function startup()
+protected function startup(): void
 {
 	parent::startup();
 	$this->listRepository = $this->context->listRepository;
 }
 
-public function beforeRender()
+protected function beforeRender(): void
 {
 	$this->template->lists = $this->listRepository->findAll()->order('title ASC');
 }

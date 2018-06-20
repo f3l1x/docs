@@ -20,13 +20,11 @@ First Form
 Let's create a simple registration form for our app. Forms are added into presenters using component [factories |presenters#component-factories]:
 
 /--php
-use Nette\Application\UI;
-
-class HomepagePresenter extends UI\Presenter
+class HomepagePresenter extends Nette\Application\UI\Presenter
 {
 	// ...
 
-	protected function createComponentRegistrationForm()
+	protected function createComponentRegistrationForm(): Nette\Application\UI\Form
 	{
 		$form = new UI\Form;
 		$form->addText('name', 'Name:');
@@ -37,7 +35,7 @@ class HomepagePresenter extends UI\Presenter
 	}
 
 	// called after form is successfully submitted
-	public function registrationFormSucceeded(UI\Form $form, $values)
+	public function registrationFormSucceeded(Nette\Application\UI\Form $form, Nette\Utils\ArrayHash $values): void
 	{
 		// ...
 		$this->flashMessage('You have successfully signed up.');
@@ -305,10 +303,7 @@ use Nette\Application\UI\Form;
 
 class SignInFormFactory
 {
-	/**
-	 * @return Form
-	 */
-	public function create()
+	public function create(): Form
 	{
 		$form = new Form;
 
@@ -323,7 +318,7 @@ class SignInFormFactory
 
 Now in each presenters' factory, which use our form, we create a form instance using our form factory class using `create()` method:
 /--php
-	protected function createComponentSignInForm()
+	protected function createComponentSignInForm(): Form
 	{
 		$form = (new SignInFormFactory)->create();
 		$form['login']->caption = 'Continue'; // we can also modify our form
@@ -340,10 +335,7 @@ use Nette\Application\UI\Form;
 
 class SignInFormFactory
 {
-	/**
-	 * @return Form
-	 */
-	public function create()
+	public function create(): Form
 	{
 		$form = new Form;
 
@@ -351,7 +343,7 @@ class SignInFormFactory
 		...
 		$form->addSubmit('login', 'Log in');
 
-		$form->onSuccess[] = function (Form $form, \stdClass $values) {
+		$form->onSuccess[] = function (Nette\Application\UI\Form $form, Nette\Utils\ArrayHash $values): void {
 			// we process our submitted form here
 		};
 

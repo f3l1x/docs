@@ -23,7 +23,7 @@ This method is called first. Is used to validate configuration parameters and ad
 /--php
 class BlogExtension extends Nette\DI\CompilerExtension
 {
-	public function loadConfiguration()
+	public function loadConfiguration(): void
 	{
 		$builder = $this->getContainerBuilder();
 		$builder->addDefinition($this->prefix('articles'))
@@ -54,7 +54,7 @@ We access the defined values ​​in the extension through the `$this->config` 
 /--php
 class BlogExtension extends Nette\DI\CompilerExtension
 {
-	public function loadConfiguration()
+	public function loadConfiguration(): void
 	{
 		$config = $this->config;
 		// ['postsPerPage' => 10, 'comments' => false]
@@ -83,7 +83,7 @@ class BlogExtension extends Nette\DI\CompilerExtension
 		'comments' => true
 	];
 
-	public function loadConfiguration()
+	public function loadConfiguration(): void
 	{
 		$this->validateConfig($this->defaults);
 		// ['postsPerPage' => 10, 'comments' => true]
@@ -129,7 +129,7 @@ We will add services this way:
 /--php
 class BlogExtension extends Nette\DI\CompilerExtension
 {
-	public function loadConfiguration()
+	public function loadConfiguration(): void
 	{
 		// load configuration parameters
 		$config = $this->validateConfig($this->defaults);
@@ -154,7 +154,7 @@ The method is called when the container contains all the services added by indiv
 /--php
 class BlogExtension extends Nette\DI\CompilerExtension
 {
-	public function beforeCompile()
+	public function beforeCompile(): void
 	{
 		$builder = $this->getContainerBuilder();
 
@@ -178,7 +178,7 @@ We will show a piece of code how Nette Framework uses the `initialize` to startu
 /--php
 class BlogExtension extends Nette\DI\CompilerExtension
 {
-	public function afterCompile(Nette\PhpGenerator\ClassType $class)
+	public function afterCompile(Nette\PhpGenerator\ClassType $class): void
 	{
 		$container = $this->getContainerBuilder();
 

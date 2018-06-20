@@ -56,7 +56,7 @@ Forms and components have been already covered when we were adding support for c
 Now add this method to the `PostPresenter`:
 
 /--php
-	protected function createComponentPostForm()
+	protected function createComponentPostForm(): Form
 	{
 		$form = new Form;
 		$form->addText('title', 'Title:')
@@ -78,7 +78,7 @@ Saving New Post from Form
 Continue by adding a handler method.
 
 /--php
-	public function postFormSucceeded($form, $values)
+	public function postFormSucceeded(Nette\Application\UI\Form $form, Nette\Utils\ArrayHash $values): void
 	{
 		$post = $this->database->table('posts')->insert($values);
 
@@ -98,7 +98,7 @@ Let’s also add the capability to edit existing posts. It shall be pretty simpl
 Add the method to the `PostPresenter`:
 
 /--php
-	public function actionEdit($postId)
+	public function actionEdit(int $postId): voids
 	{
 		$post = $this->database->table('posts')->get($postId);
 		if (!$post) {
@@ -122,7 +122,7 @@ Now create the template (`app/presenters/templates/Post/edit.latte`):
 Let’s also extend the form handler:
 
 /--php
-	public function postFormSucceeded($form, $values)
+	public function postFormSucceeded(Nette\Application\UI\Form $form, Nette\Utils\ArrayHash $values): void
 	{
 		$postId = $this->getParameter('postId');
 

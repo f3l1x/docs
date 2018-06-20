@@ -18,7 +18,7 @@ Nette doesn't implement client-side AJAX requests. We recommend [nette.ajax.js |
 There is a pre-processed object called `payload` dedicated to sending data to the browser in JSON.
 
 /--php
-	public function actionDelete($id)
+	public function actionDelete(int $id): void
 	{
 		if ($this->isAjax()) {
 			$this->payload->message = 'Success';
@@ -36,7 +36,7 @@ For a full control over your JSON output use JsonResponse in your presenter. It 
 If we want to send HTML, we can either set a special template for AJAX requests:
 
 /--php
-	public function handleClick($param)
+	public function handleClick(string $param): void
 	{
 		if ($this->isAjax()) {
 			$this->template->setFile('path/to/ajax.latte');
@@ -120,7 +120,7 @@ You can't invalidate dynamic snippet directly (invalidation of `item-1` takes no
 In the example above, you have to make sure, that for an AJAX request only one item will be added to the `$list` array, therefore the `foreach` loop will print just one dynamic snippet.
 
 /--php
-class HomepagePresenter extends \Nette\Application\UI\Presenter
+class HomepagePresenter extends Nette\Application\UI\Presenter
 {
 	/**
 	 * This method returns data for the list.
@@ -128,7 +128,7 @@ class HomepagePresenter extends \Nette\Application\UI\Presenter
 	 * For the purpose of this example, the data is hard-coded.
 	 * @return array
 	 */
-	private function getTheWholeList()
+	private function getTheWholeList(): array
 	{
 		return [
 			'First',
@@ -137,14 +137,14 @@ class HomepagePresenter extends \Nette\Application\UI\Presenter
 		];
 	}
 
-	public function renderDefault()
+	public function renderDefault(): void
 	{
 		if (!isset($this->template->list)) {
 			$this->template->list = $this->getTheWholeList();
 		}
 	}
 
-	public function handleUpdate($id)
+	public function handleUpdate(int $id): void
 	{
 		$this->template->list = $this->isAjax()
 				? []
@@ -202,7 +202,7 @@ In this case, the simplest way is to wrap the whole list in one more snippet and
 \--
 
 /--php
-	public function handleAdd()
+	public function handleAdd(): void
 	{
 		$this->template->list = $this->getTheWholeList();
 		$this->template->list[] = 'New one';
@@ -231,7 +231,7 @@ $.getJSON(
 And handle method with s corresponding parameters in component.
 
 /--php
-public function handleChangeCountBasket($id, $count)
+public function handleChangeCountBasket(int $id, int $count): void
 {
 
 }

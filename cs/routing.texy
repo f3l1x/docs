@@ -463,7 +463,6 @@ Router Factory
 Doporučenou cestou pro konfiguraci rout aplikace je si napsat továrnu (například třídu `RouterFactory`) a zaregistrovat ji do [systémového DI containeru |configuring#sluzby] v konfiguračním souboru:
 
 /--php
-<?php
 namespace App;
 
 use Nette;
@@ -474,10 +473,7 @@ class RouterFactory
 {
 	use Nette\StaticClass;
 
-	/**
-	 * @return Nette\Application\IRouter
-	 */
-	public static function createRouter()
+	public static function createRouter(): Nette\Application\IRouter
 	{
 		$router = new RouteList;
 		$router[] = new Route('article/<id>', 'Article:view');
@@ -507,10 +503,7 @@ Jakékoliv závislosti, třeba na databázi, nebo příznak, lze předat do tov�
 /--php
 class RouterFactory
 {
-	/**
-	 * @return Nette\Application\IRouter
-	 */
-	public static function createRouter(Nette\Database\Connection $db, $debugMode = false)
+	public static function createRouter(Nette\Database\Connection $db, bool $debugMode = false): Nette\Application\IRouter
 	{
 		$router = new RouteList;
 		$router[] = ...
@@ -537,10 +530,7 @@ Pokud máme více rout, které chceme zařadit do modulu, můžeme využít `Rou
 /--php
 class RouterFactory
 {
-	/**
-	 * @return \Nette\Application\IRouter
-	 */
-	public static function createRouter()
+	public static function createRouter(): Nette\Application\IRouter
 	{
 		$router = new RouteList;
 		$router[] = self::createForumRouter();
@@ -549,7 +539,7 @@ class RouterFactory
 		return $router;
 	}
 
-	public static function createForumRouter()
+	public static function createForumRouter(): Nette\Application\IRouter
 	{
 		$router = new RouteList('Forum');
 		// http://forum.example.com/homepage/default se mapuje na presenter Forum:Homepage
@@ -603,12 +593,12 @@ use Nette\Http\Url;
 
 class MyRouter implements Nette\Application\IRouter
 {
-	function match(HttpRequest $httpRequest)
+	public function match(HttpRequest $httpRequest): ?Nette\Application\Request
 	{
 		// ...
 	}
 
-	function constructUrl(AppRequest $appRequest, Url $refUrl)
+	public function constructUrl(AppRequest $appRequest, Url $refUrl): ?string
 	{
 		// ...
 	}

@@ -20,13 +20,11 @@ První formulář
 Vytvoříme si v naší aplikaci jednoduchý registrační formulář. Přidáme ho do presenteru pomocí tzv. [továrny |presenters#presenter-a-komponenty]:
 
 /--php
-use Nette\Application\UI;
-
-class HomepagePresenter extends UI\Presenter
+class HomepagePresenter extends Nette\Application\UI\Presenter
 {
 	// ...
 
-	protected function createComponentRegistrationForm()
+	protected function createComponentRegistrationForm(): Nette\Application\UI\Form
 	{
 		$form = new UI\Form;
 		$form->addText('name', 'Jméno:');
@@ -37,7 +35,7 @@ class HomepagePresenter extends UI\Presenter
 	}
 
 	// volá se po úspěšném odeslání formuláře
-	public function registrationFormSucceeded(UI\Form $form, $values)
+	public function registrationFormSucceeded(Nette\Application\UI\Form $form, Nette\Utils\ArrayHash $values): void
 	{
 		// ...
 		$this->flashMessage('Byl jste úspěšně registrován.');
@@ -303,10 +301,8 @@ use Nette\Application\UI\Form;
 
 class SignInFormFactory
 {
-	/**
-	 * @return Form
-	 */
-	public function create()
+
+	public function create(): Form
 	{
 		$form = new Form;
 
@@ -322,7 +318,7 @@ class SignInFormFactory
 V továrničce každého presenteru, který náš formulář používá, jej následně vytvoříme voláním metody `create()`:
 
 /--php
-	protected function createComponentSignInForm()
+	protected function createComponentSignInForm(): Form
 	{
 		$form = (new SignInFormFactory)->create();
 		$form['login']->caption = 'Pokračovat'; // můžeme také formulář pozměnit
@@ -340,10 +336,7 @@ use Nette\Application\UI\Form;
 
 class SignInFormFactory
 {
-	/**
-	 * @return Form
-	 */
-	public function create()
+	public function create(): Form
 	{
 		$form = new Form;
 

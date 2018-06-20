@@ -107,7 +107,7 @@ The `gethostbyaddr($ip)` will therefore be called only once and next time, only 
 Similarly, it is possible to wrap a function with cache and call it later.
 
 /--php
-function calculate($number)
+function calculate(int $number): string
 {
 	return 'number is ' . $number;
 }
@@ -262,11 +262,13 @@ use Nette;
 
 class MyPresenter
 {
-	/**
-	 * @inject
-	 * @var Nette\Caching\IStorage
-	 */
-	public $storage;
+	/** @var Nette\Caching\IStorage */
+	private $storage;
+
+	public function __construct(Nette\Caching\IStorage $storage)
+	{
+		$this->storage = $storage;
+	}
 
 	public function actionDefault()
 	{

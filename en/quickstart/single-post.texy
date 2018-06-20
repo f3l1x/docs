@@ -10,7 +10,6 @@ We need to create a new render method, that will fetch one specific blog post an
 The `PostPresenter` should look like this:
 
 /--php
-<?php
 namespace App\Presenters;
 
 use Nette;
@@ -27,7 +26,7 @@ class PostPresenter extends Nette\Application\UI\Presenter
 		$this->database = $database;
 	}
 
-	public function renderShow($postId)
+	public function renderShow(int $postId): void
 	{
 		$this->template->post = $this->database->table('posts')->get($postId);
 	}
@@ -104,7 +103,7 @@ Checking Post ID
 What happens if someone alters the URL and inserts `postId` which does not exist? We should provide the user with a nice "page not found" error. Let’s update the render method in `app/presenters/PostPresenter.php`:
 
 /--php
-	public function renderShow($postId)
+	public function renderShow(int $postId): void
 	{
 		$post = $this->database->table('posts')->get($postId);
 		if (!$post) {

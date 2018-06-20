@@ -23,7 +23,7 @@ Tato metoda se volá jako první. Používá se k validaci konfiguračních para
 /--php
 class BlogExtension extends Nette\DI\CompilerExtension
 {
-	public function loadConfiguration()
+	public function loadConfiguration(): void
 	{
 		$builder = $this->getContainerBuilder();
 		$builder->addDefinition($this->prefix('articles'))
@@ -54,7 +54,7 @@ K definovaným hodnotám se v rozšíření dostaneme přes proměnnou `$this->c
 /--php
 class BlogExtension extends Nette\DI\CompilerExtension
 {
-	public function loadConfiguration()
+	public function loadConfiguration(): void
 	{
 		$config = $this->config;
 		// ['postsPerPage' => 10, 'comments' => false]
@@ -83,7 +83,7 @@ class BlogExtension extends Nette\DI\CompilerExtension
 		'comments' => true
 	];
 
-	public function loadConfiguration()
+	public function loadConfiguration(): void
 	{
 		$this->validateConfig($this->defaults);
 		// ['postsPerPage' => 10, 'comments' => true]
@@ -129,7 +129,7 @@ Dodatečně služby načteme.
 /--php
 class BlogExtension extends Nette\DI\CompilerExtension
 {
-	public function loadConfiguration()
+	public function loadConfiguration(): void
 	{
 		// načtení konfigurační parametrů
 		$config = $this->validateConfig($this->defaults);
@@ -154,7 +154,7 @@ Metoda se volá ve chvíli, kdy kontejner obsahuje všechny služby přidané je
 /--php
 class BlogExtension extends Nette\DI\CompilerExtension
 {
-	public function beforeCompile()
+	public function beforeCompile(): void
 	{
 		$builder = $this->getContainerBuilder();
 
@@ -178,7 +178,7 @@ Ukážeme si kousek kódu, kde Nette Framework doplňuje do metody `initialize` 
 /--php
 class BlogExtension extends Nette\DI\CompilerExtension
 {
-	public function afterCompile(Nette\PhpGenerator\ClassType $class)
+	public function afterCompile(Nette\PhpGenerator\ClassType $class): void
 	{
 		$container = $this->getContainerBuilder();
 

@@ -431,11 +431,11 @@ $route = new Route('<presenter>/<action>', [
 	'presenter' => 'Homepage',
 	'action' => 'default',
 	null => [
-		Route::FILTER_IN => function (array $params) {
+		Route::FILTER_IN => function (array $params): array {
 			// ...
 			return $params;
 		},
-		Route::FILTER_OUT => function (array $params) {
+		Route::FILTER_OUT => function (array $params): array {
 			// ...
 			return $params;
 		},
@@ -465,7 +465,6 @@ Router Factory
 The recommended way to configure the application router is to write a factory (e.g. class `RouterFactory`) and register it to [system DI container |configuring#services] in a configuration file:
 
 /--php
-<?php
 namespace App;
 
 use Nette;
@@ -476,10 +475,7 @@ class RouterFactory
 {
 	use Nette\StaticClass;
 
-	/**
-	 * @return Nette\Application\IRouter
-	 */
-	public static function createRouter()
+	public static function createRouter(): Nette\Application\IRouter
 	{
 		$router = new RouteList;
 		$router[] = new Route('article/<id>', 'Article:view');
@@ -509,10 +505,7 @@ Any dependencies, such as a database connection or a configuration flag, can be 
 /--php
 class RouterFactory
 {
-	/**
-	 * @return Nette\Application\IRouter
-	 */
-	public static function createRouter(Nette\Database\Connection $db, $debugMode = false)
+	public static function createRouter(Nette\Database\Connection $db, bool $debugMode = false): Nette\Application\IRouter
 	{
 		$router = new RouteList;
 		$router[] = ...
@@ -540,10 +533,7 @@ If we have more routes that we want to group together in a module, we can use `R
 /--php
 class RouterFactory
 {
-	/**
-	 * @return \Nette\Application\IRouter
-	 */
-	public static function createRouter()
+	public static function createRouter(): Nette\Application\IRouter
 	{
 		$router = new RouteList;
 		$router[] = self::createForumRouter();
@@ -552,7 +542,7 @@ class RouterFactory
 		return $router;
 	}
 
-	public static function createForumRouter()
+	public static function createForumRouter(): Nette\Application\IRouter
 	{
 		$router = new RouteList('Forum');
 		// http://forum.example.com/homepage/default maps to presenter Forum:Homepage
@@ -603,12 +593,12 @@ use Nette\Http\Url;
 
 class MyRouter implements Nette\Application\IRouter
 {
-	function match(HttpRequest $httpRequest)
+	public function match(HttpRequest $httpRequest): ?Nette\Application\Request
 	{
 		// ...
 	}
 
-	function constructUrl(AppRequest $appRequest, Url $refUrl)
+	public function constructUrl(AppRequest $appRequest, Url $refUrl): ?string
 	{
 		// ...
 	}

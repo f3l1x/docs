@@ -34,14 +34,12 @@ Templates
 A component has factory for its [template |latte:]. It creates a template, passes several variables (shown below) and registers [built-in filters |latte:filters]. Rendering is our job and it is done in method `render()`. This is where we choose the file from which the template will be loaded. `render()` method is also the right place to register variables used in the template. The template can be put inside the same folder as the component and with the same file name.
 
 /--php
-public function render()
+public function render(): void
 {
-	$template = $this->template;
-	$template->setFile(__DIR__ . '/poll.latte');
 	// insert some parameters to the template
 	$template->param = 'some value';
 	// render it
-	$template->render();
+	$this->template->render(__DIR__ . '/poll.latte');
 }
 \--
 
@@ -88,7 +86,7 @@ Sending is done by the method [flashMessage |api:Nette\Application\UI\Control::f
 Example:
 
 /--php
-public function deleteFormSubmitted(Form $form)
+public function deleteFormSubmitted(Nette\Application\UI\Form $form, Nette\Utils\ArrayHash $values): void
 {
 	... delete record using model ...
 
@@ -123,7 +121,7 @@ In other words: the definition of the method `handle{Signal}` is taken and all p
 An example signal handler:
 
 /--php
-public function handleClick($x, $y)
+public function handleClick(int $x, int $y): void
 {
 	if (!$this->isClickable($x, $y)) {
 		throw new Nette\Application\UI\BadSignalException('Action not allowed.');
@@ -238,9 +236,7 @@ OK, but how is the `PollManager` put into the `PollControl`'s constructor? To do
 /--php
 class PollControlFactory
 {
-	/**
-	 * @var PollManager
-	 */
+	/** @var PollManager */
 	private $pollManager;
 
 	public function __construct(PollManager $pollManager)
@@ -248,10 +244,7 @@ class PollControlFactory
 		$this->pollManager = $pollManager;
 	}
 
-	/**
-	 * @return PollControl
-	 */
-	public function create($pollId)
+	public function create(int $pollId): PollControl
 	{
 		return new PollControl($pollId, $this->pollManager);
 	}
@@ -267,11 +260,9 @@ services:
 Finally, we will use this factory in our presenter:
 
 /--php
-class PollPresenter extends \Nette\UI\Application\Presenter
+class PollPresenter extends Nette\UI\Application\Presenter
 {
-	/**
-	 * @var PollControlFactory
-	 */
+	/** @var PollControlFactory */
 	private $pollControlFactory;
 
 	public function __construct(PollControlFactory $pollControlFactory)
@@ -279,7 +270,7 @@ class PollPresenter extends \Nette\UI\Application\Presenter
 		$this->pollControlFactory = $pollControlFactory;
 	}
 
-	protected function createComponentPollControl()
+	protected function createComponentPollControl(): PollControl
 	{
 		$pollId = 1; // we can pass our parameter
 		return $this->pollControlFactory->create($pollId);
@@ -292,10 +283,7 @@ Luckily, Nette can generate these simple factories, so we can write just interfa
 /--php
 interface IPollControlFactory
 {
-	/**
-	 * @return PollControl
-	 */
-	public function create($pollId);
+	public function create(int $pollId): PollControl;
 }
 \--
 
@@ -424,7 +412,7 @@ An example: Class `UploadControl`, representing form element for uploading files
 /--php
 class UploadControl extends Nette\Forms\Controls\BaseControl
 {
-	public function __construct($label)
+	public function __construct(string $label)
 	{
 		$this->monitor(Nette\Forms\Form::class);
 		// ...
@@ -452,7 +440,7 @@ Since `nette/component-model` v2.4, the preferred way is to pass the callbacks d
 /--php
 class UploadControl extends Nette\Forms\Controls\BaseControl
 {
-	public function __construct($label)
+	public function __construct(string $label)
 	{
 		$this->monitor(Nette\Forms\Form::class, function ($form) {
 			$form->getElementPrototype()->enctype = 'multipart/form-data';

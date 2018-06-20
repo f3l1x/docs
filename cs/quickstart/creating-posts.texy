@@ -56,7 +56,7 @@ Formuláře a komponenty jsme si již vysvětlili při vytváření komentářů
 Nyní přidejme tuto metodu do presenteru `PostPresenter`:
 
 /--php
-	protected function createComponentPostForm()
+	protected function createComponentPostForm(): Nette\Application\UI\Form
 	{
 		$form = new Form;
 		$form->addText('title', 'Titulek:')
@@ -78,7 +78,7 @@ Ukládání nového příspěvku z formuláře
 Pokračujeme přidáním metody, která zpracuje data z formuláře:
 
 /--php
-	public function postFormSucceeded($form, $values)
+	public function postFormSucceeded(Nette\Application\UI\Form $form, Nette\Utils\ArrayHash $values): void
 	{
 		$post = $this->database->table('posts')->insert($values);
 
@@ -98,7 +98,7 @@ Nyní přidáme také možnost editace příspěvku. Bude to velmi jednoduché. 
 Přidáme metodu do presenteru `PostPresenter`:
 
 /--php
-	public function actionEdit($postId)
+	public function actionEdit(int $postId): void
 	{
 		$post = $this->database->table('posts')->get($postId);
 		if (!$post) {
@@ -122,7 +122,7 @@ Nyní vytvoříme další šablonu (`app/presenters/templates/Post/edit.latte`):
 Rozšíříme také callback metodu:
 
 /--php
-	public function postFormSucceeded($form, $values)
+	public function postFormSucceeded(Nette\Application\UI\Form $form, Nette\Utils\ArrayHash $values): void
 	{
 		$postId = $this->getParameter('postId');
 

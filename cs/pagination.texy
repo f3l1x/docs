@@ -9,8 +9,6 @@ Pamatuj, že Paginator pomůže jen s matematikou; Výběr části dat, jejich z
 Vyjdeme ze stavu, kdy vypisujeme všechna data bez stránkování. Pro výběr dat z databáze máme třídu ArticleRepository, která kromě konstruktoru obsahuje metodu `findPublishedArticles`, která vrací všechny publikované články seřazené sestupně podle data publikace.
 
 /--php
-<?php
-
 namespace App\Model;
 
 use Nette;
@@ -30,7 +28,7 @@ class ArticleRepository
 	}
 
 
-	public function findPublishedArticles(): \Nette\Database\ResultSet
+	public function findPublishedArticles(): Nette\Database\ResultSet
 	{
 		return $this->database->query('
 			SELECT * FROM articles
@@ -45,8 +43,6 @@ class ArticleRepository
 V presenteru si pak injectujeme modelovou třídu a v render metodě si vyžádáme publikované články, které předáme do šablony:
 
 /--php
-<?php
-
 namespace App\Presenters;
 
 use Nette;
@@ -55,11 +51,15 @@ use App\Model\ArticleRepository;
 
 class HomepagePresenter extends Nette\Application\UI\Presenter
 {
-	/** @var ArticleRepository @inject */
-	public $articleRepository;
+	/** @var ArticleRepository */
+	private $articleRepository;
 
+	public function __construct(ArticleRepository $articleRepository)
+	{
+		$this->articleRepository = $articleRepository;
+	}
 
-	public function renderDefault()
+	public function renderDefault(): void
 	{
 		$this->template->articles = $this->articleRepository->findPublishedArticles();
 	}
@@ -88,8 +88,6 @@ Ten zajistí, že se všechny články rozdělí do několika stránek a my zobr
 V prvním kroku si upravíme metodu pro získání článků ve třídě repositáře tak, aby nám uměla vracet jen články pro jednu stránku. Také přidáme metodu pro zjištění celkového počtu článku v databázi, kterou budeme potřebovat pro nastavení Paginatoru:
 
 /--php
-<?php
-
 namespace App\Model;
 
 use Nette;
@@ -97,7 +95,6 @@ use Nette;
 
 class ArticleRepository
 {
-	use Nette\SmartObject;
 
 	/** @var Nette\Database\Connection */
 	private $database;
@@ -136,8 +133,6 @@ Následně se pustíme do úprav presenteru. Do render metody budeme předávat 
 Dále také render metodu rozšíříme o získání instance Paginatoru, jeho nastavení a výběru správných článků pro zobrazení v šabloně. HomepagePresenter bude po úpravách vypadat takto:
 
 /--php
-<?php
-
 namespace App\Presenters;
 
 use Nette;
@@ -146,11 +141,15 @@ use App\Model\ArticleRepository;
 
 class HomepagePresenter extends Nette\Application\UI\Presenter
 {
-	/** @var ArticleRepository @inject */
-	public $articleRepository;
+	/** @var ArticleRepository */
+	private $articleRepository;
 
+	public function __construct(ArticleRepository $articleRepository)
+	{
+		$this->articleRepository = $articleRepository;
+	}
 
-	public function renderDefault(int $page = 1)
+	public function renderDefault(int $page = 1): void
 	{
 		// Zjistíme si celkový počet publikovaných článků
 		$articlesCount = $this->articleRepository->getPublishedArticlesCount();
@@ -210,16 +209,12 @@ Takto jsme doplnili stránku o možnost stránkování pomocí Paginatoru. V př
 Repozitář bude při tomto způsobu implementace vypadat takto:
 
 /--php
-<?php
-
 namespace App\Model;
 
 use Nette;
 
-
 class ArticleRepository
 {
-	use Nette\SmartObject;
 
 	/** @var Nette\Database\Context */
 	private $database;
@@ -231,7 +226,7 @@ class ArticleRepository
 	}
 
 
-	public function findPublishedArticles(): \Nette\Database\Table\Selection
+	public function findPublishedArticles(): Nette\Database\Table\Selection
 	{
 		return $this->database->table('articles')
 			->where('created_at < ', new \DateTime)
@@ -244,8 +239,6 @@ class ArticleRepository
 V presenteru nemusíme vytvářet Paginator, použijeme místo něj metodu třídy `Selection`, kterou nám vrací repositář:
 
 /--php
-<?php
-
 namespace App\Presenters;
 
 use Nette;
@@ -254,11 +247,15 @@ use App\Model\ArticleRepository;
 
 class HomepagePresenter extends Nette\Application\UI\Presenter
 {
-	/** @var ArticleRepository @inject */
-	public $articleRepository;
+	/** @var ArticleRepository */
+	private $articleRepository;
 
+	public function __construct(ArticleRepository $articleRepository)
+	{
+		$this->articleRepository = $articleRepository;
+	}
 
-	public function renderDefault(int $page = 1)
+	public function renderDefault(int $page = 1): void
 	{
 		// Vytáhneme si publikované články
 		$articles = $this->articleRepository->findPublishedArticles();

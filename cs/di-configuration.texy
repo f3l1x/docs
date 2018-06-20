@@ -127,7 +127,7 @@ services:
 Vygeneruje:
 
 /--php
-public function createServiceDatabase()
+public function createServiceDatabase(): PDO
 {
 	$service = new PDO('mysql:host=127.0.0.1;dbname=test', 'root', 'secret');
 	$service->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -135,7 +135,7 @@ public function createServiceDatabase()
 	return $service;
 }
 
-public function createServiceMyService()
+public function createServiceMyService(): MyService
 {
 	$service = new MyService;
 	MyService::$foo = 2;

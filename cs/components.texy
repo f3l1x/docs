@@ -34,14 +34,12 @@ Bavíme-li se o komponentách, obvykle myslíme potomky třídy [Control |api:Ne
 Komponenta obsahuje továrnu na svou [šablonu |latte:]. Ta standardně vytvoří šablonu, předá ji některé základní proměnné a zaregistruje [standardní filtry |latte:filters]. O vykreslení se už musíme postarat sami, a to v metodě `render()`. Tam také musíme určit soubor, ze kterého bude šablona načtena, a zaregistrovat proměnné, které se budou v šabloně používat. Šablonu můžeme umístit do stejné složky a pod stejným názvem jako komponentu:
 
 /--php
-public function render()
+public function render(): void
 {
-	$template = $this->template;
-	$template->setFile(__DIR__ . '/poll.latte');
 	// vložíme do šablony nějaké parametry
-	$template->param = $value;
+	$this->template->param = $value;
 	// a vykreslíme ji
-	$template->render();
+	$this->template->render(__DIR__ . '/poll.latte');
 }
 \--
 
@@ -86,7 +84,7 @@ Zasílání obstarává metoda [flashMessage |api:Nette\Application\UI\Control::
 
 Příklad:
 /--php
-public function deleteFormSubmitted(Form $form)
+public function deleteFormSubmitted(Nette\Application\UI\Form $form, Nette\Utils\ArrayHash $values): void
 {
 	// ... požádáme model o smazání záznamu ...
 
@@ -122,7 +120,7 @@ Jinými slovy: vezme se definice funkce `handle{signal}` a všechny parametry, k
 Example signal handler:
 
 /--php
-public function handleClick($x, $y)
+public function handleClick(int $x, int $y): void
 {
 	if (!$this->isClickable($x, $y)) {
 		throw new Nette\Application\UI\BadSignalException('Action not allowed.');
@@ -218,13 +216,13 @@ class PollControl extends Control
 	 */
 	private $pollId;
 
-	public function __construct($pollId, PollManager $pollManager)
+	public function __construct(int $pollId, PollManager $pollManager)
 	{
 		$this->pollManager = $pollManager;
 		$this->pollId = $pollId;
 	}
 
-	public function handleVote($voteId)
+	public function handleVote(int $voteId): void
 	{
 		$this->pollManager->vote($pollId, $voteId);
 		//...
@@ -247,10 +245,7 @@ class PollControlFactory
 		$this->pollManager = $pollManager;
 	}
 
-	/**
-	 * @return PollControl
-	 */
-	public function create($pollId)
+	public function create(int $pollId): PollControl
 	{
 		return new PollControl($pollId, $this->pollManager);
 	}
@@ -267,11 +262,9 @@ services:
 a nakonec ji použijeme v našem presenteru:
 
 /--php
-class PollPresenter extends \Nette\UI\Application\Presenter
+class PollPresenter extends Nette\UI\Application\Presenter
 {
-	/**
-	 * @var PollControlFactory
-	 */
+	/** @var PollControlFactory */
 	private $pollControlFactory;
 
 	public function __construct(PollControlFactory $pollControlFactory)
@@ -279,7 +272,7 @@ class PollPresenter extends \Nette\UI\Application\Presenter
 		$this->pollControlFactory = $pollControlFactory;
 	}
 
-	protected function createComponentPollControl()
+	protected function createComponentPollControl(): PollControl
 	{
 		$pollId = 1; // můžeme si předat náš parametr
 		return $this->pollControlFactory->create($pollId);
@@ -292,10 +285,7 @@ Naštěstí Nette takovéhle jednoduché továrny umí generovat, takže místo 
 /--php
 interface IPollControlFactory
 {
-	/**
-	 * @return PollControl
-	 */
-	public function create($pollId);
+	public function create(int $pollId): PollControl;
 }
 \--
 
@@ -427,7 +417,7 @@ Pro lepší pochopení příklad: třída `UploadControl`, reprezentující form
 /--php
 class UploadControl extends Nette\Forms\Controls\BaseControl
 {
-	public function __construct($label)
+	public function __construct(string $label)
 	{
 		$this->monitor(Nette\Forms\Form::class);
 		// ...
@@ -440,7 +430,7 @@ class UploadControl extends Nette\Forms\Controls\BaseControl
 a jakmile je formulář k dispozici, zavolá se metoda attached:
 
 /--php
-protected function attached($form)
+protected function attached($form): void
 {
 	parent::attached($form);
 
@@ -455,7 +445,7 @@ Od `nette/component-model` v2.4 je preferovaný způsob předat callbacky přím
 /--php
 class UploadControl extends Nette\Forms\Controls\BaseControl
 {
-	public function __construct($label)
+	public function __construct(string $label)
 	{
 		$this->monitor(Nette\Forms\Form::class, function ($form) {
 			$form->getElementPrototype()->enctype = 'multipart/form-data';

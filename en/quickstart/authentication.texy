@@ -33,17 +33,11 @@ We now have the backend part of authentication ready and we need to provide a us
 Let's start with the login form. You already know how forms work in a presenter. Create the `SignPresenter` and method `createComponentSignInForm`. It should look like this:
 
 /--php
-<?php
-
 namespace App\Presenters;
-
-use Nette;
-use Nette\Application\UI\Form;
-
 
 class SignPresenter extends Nette\Application\UI\Presenter
 {
-	protected function createComponentSignInForm()
+	protected function createComponentSignInForm(): Nette\Application\UI\Form
 	{
 		$form = new Form;
 		$form->addText('username', 'Username:')
@@ -84,7 +78,7 @@ We add also a *form handler* for signing in the user, that gets invoked right af
 The handler will just take the username and password the user entered and will pass it to the authenticator defined earlier. After the user has logged in, we will redirect him to the homepage.
 
 /--php
-	public function signInFormSucceeded(Form $form, Nette\Utils\ArrayHash $values)
+	public function signInFormSucceeded(Nette\Application\UI\Form $form, Nette\Utils\ArrayHash $values): void
 	{
 		try {
 			$this->getUser()->login($values->username, $values->password);
@@ -113,7 +107,7 @@ Presenter Views
 Let's create an action method `actionCreate` that will redirect the user to the sign in form and require authentication if the user is not logged in.
 
 /--php
-	public function actionCreate()
+	public function actionCreate(): void
 	{
 		if (!$this->getUser()->isLoggedIn()) {
 			$this->redirect('Sign:in');
@@ -124,7 +118,7 @@ Let's create an action method `actionCreate` that will redirect the user to the 
 We should also secure the edit view, so simply add those three lines there too.
 
 /--php
-	public function actionEdit($postId)
+	public function actionEdit(int $postId): void
 	{
 		if (!$this->getUser()->isLoggedIn()) {
 			$this->redirect('Sign:in');
@@ -160,7 +154,7 @@ The last, and **the most important thing** is to **secure the form handler**. Be
 It can be prevented with a simple *if* that we will add at the beginning of `postFormSucceeded`
 
 /--php
-	public function postFormSucceeded($form)
+	public function postFormSucceeded(Nette\Application\UI\Form $form, Nette\Utils\ArrayHash $values): void
 	{
 		if (!$this->getUser()->isLoggedIn()) {
 			$this->error('You need to log in to create or edit posts');
@@ -191,7 +185,7 @@ If the user is not yet logged in, we will show the "Sign in" link. Otherwise, we
 The logout action looks like this, and because we redirect the user immediately, there is no need for a view template.
 
 /--php
-	public function actionOut()
+	public function actionOut(): void
 	{
 		$this->getUser()->logout();
 		$this->flashMessage('You have been signed out.');

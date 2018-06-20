@@ -136,7 +136,7 @@ class MailSender
 	/** @var Nette\Application\UI\ITemplateFactory */
 	private $templateFactory;
 
-	public function sendEmail()
+	public function sendEmail(): void
 	{
 		$template = $this->createTemplate();
 
@@ -147,7 +147,7 @@ class MailSender
 		$mail->setHtmlBody($template);
 	}
 
-	protected function createTemplate()
+	protected function createTemplate(): Nette\Bridges\ApplicationLatte\Template
 	{
 		$template = $this->templateFactory->createTemplate();
 		$template->getLatte()->addProvider('uiControl', $this->linkGenerator);

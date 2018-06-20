@@ -98,10 +98,10 @@ Presenter je objekt, který vezme požadavek přeložený routerem a vymyslí od
 /--php
 class ProductPresenter extends Nette\Application\UI\Presenter
 {
-	public function renderShow($id)
+	public function renderShow(int $id): void
 	{
 		// získáme data z modelu a předáme do šablony
-		$this->template->product = $this->model->getProduct($id);
+		$this->template->product = $this->productRepository->getProduct($id);
 	}
 }
 \--
@@ -186,7 +186,7 @@ Pokud by součástí modulu `Front` byl presenter `Product`. Akce `show` se pak 
 /--php
 namespace FrontModule;
 
-class ProductPresenter extends \Nette\Application\UI\Presenter
+class ProductPresenter extends Nette\Application\UI\Presenter
 {
 	// ...
 }
@@ -337,7 +337,7 @@ Krom klasických parametrů, které jsme používali nyní, existují i tzv. per
 Pokud má vaše aplikace dvě jazykové mutace, bylo by neskutečně únavné v každém odkazu přenášet i aktuální jazyk. To není s Nette Framework potřeba. Prostě si parametr `$lang` označíme jako persistentní a to tímto způsobem:
 
 /--php
-class ProductPresenter extends Presenter
+class ProductPresenter extends Nette\Application\UI\Presenter
 {
 	/** @persistent */
 	public $lang;
@@ -467,9 +467,9 @@ Chyba 404 a spol.
 Pokud nemůžeme splnit požadavek z důvodu, že například záznam neexistuje v databázi, vyhodíme metodou `error()` výjimku `Nette\Application\BadRequestException`, která představuje HTTP chybu 404:
 
 /--php
-public function renderShow($id)
+public function renderShow(int $id): void
 {
-	$product = $this->model->getProduct($id);
+	$product = $this->productRepository->getProduct($id);
 	if (!$product) {
 		$this->error();
 	}
@@ -489,7 +489,7 @@ Jde o zprávy obvykle informující o výsledku nějaké operace. Důležitým r
 Stačí zavolat metodu [flashMessage() |api:Nette\Application\UI\Control::flashMessage()] a o předání do šablony se postará presenter. Prvním parametrem je text zprávy a nepovinným druhým parametrem její typ (error, warning, info apod.). Metoda `flashMessage()` vrací instanci flash zprávy, které je možné přidávat další informace.
 
 /--php
-public function deleteFormSubmitted($form)
+public function deleteFormSubmitted(Nette\Application\UI\Form $form, Nette\Utils\ArrayHash $values): void
 {
 	// ... požádáme model o smazání záznamu ...
 
@@ -515,12 +515,12 @@ Použití modelových tříd
 Jak jsme si řekli, model je samostatná vrstva a je složen z hromady tříd, kde každá obstarává část logiky aplikace. Pokud bychom měli například model `App\Articles`, který se stará o načítání a ukládání článků, mohli bychom si o něj v presenteru říct pomocí [Dependency Injection |dependency-injection], za předpokladu že je [registrovaný jako služba |configuring#sluzby] v [DI kontejneru |dependency-injection#nette-di-container].
 
 /--php
-class ArticlePresenter extends Presenter
+class ArticlePresenter extends Nette\Application\UI\Presenter
 {
-	/** @var \App\Articles @inject */
-	public $articles;
+	/** @var Articles @inject */
+	public $articleModel;
 
-	public function renderShow($id)
+	public function renderShow(int $id): void
 	{
 		$this->template->article = $this->articles->find($id);
 	}
@@ -566,14 +566,14 @@ Továrna na komponenty představuje elegantní způsob, jak komponenty vytváře
 /--php
 class DefaultPresenter extends Nette\Application\UI\Presenter
 {
-	public function renderDefault()
+	public function renderDefault(): void
 	{
 		$menu = $this['menu']; // přistoupíme ke komponentě
 		// a pokud to bylo poprvé, zavolá se createComponentMenu()
 		// ...
 	}
 
-	protected function createComponentMenu()
+	protected function createComponentMenu(): MenuControl
 	{
 		// vytvoříme a nakonfigurujeme komponentu
 		$menu = new MenuControl;
@@ -611,7 +611,7 @@ Nejen parametry, ale také komponenty mohou být perzistentní. Jejich stav se p
 /**
  * @persistent(calendar, menu)
  */
-class DefaultPresenter extends Presenter
+class DefaultPresenter extends Nette\Application\UI\Presenter
 {
 	// ...
 }

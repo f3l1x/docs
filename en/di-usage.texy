@@ -107,7 +107,7 @@ Second method specific for Nette Framework. It is a special case of passing by a
 /--php
 class MyService
 {
-	/** @var \App\AnotherService @inject */
+	/** @var AnotherService @inject */
 	public $anotherService;
 }
 \--
@@ -158,7 +158,7 @@ class MyPresenter extends Nette\Application\UI\Presenter
 	}
 
 	// 3) Public variable with the @inject annotation:
-	/** @var \App\Service3 @inject */
+	/** @var Service3 @inject */
 	public $service3;
 }
 \--
@@ -203,13 +203,13 @@ The component could be used in the presenter in the following way:
 /--php
 class MyPresenter extends Nette\Application\UI\Presenter
 {
-	/** @var \App\Service1 @inject */
+	/** @var Service1 @inject */
 	public $service1;
 
-	/** @var \App\Service2 @inject */
+	/** @var Service2 @inject */
 	public $service2;
 
-	protected function createComponentMyControl()
+	protected function createComponentMyControl(): MyControl
 	{
 		$control = new MyControl($this->service1);
 		$control->setService2($this->service2);
@@ -236,7 +236,7 @@ class MySecondControl extends Nette\Application\UI\Control
 		// assign dependencies to members $service1, $service2, $service3
 	}
 
-	protected function createComponentMyControl()
+	protected function createComponentMyControl(): MyControl
 	{
 		$control = new MyControl($this->service1);
 		$control->setService2($this->service2);
@@ -297,7 +297,7 @@ class Service2
 {
 	private $anotherService;
 
-	public function setAnotherService(AnotherService $service)
+	public function setAnotherService(AnotherService $service): void
 	{
 		$this->anotherService = $service;
 	}
@@ -323,13 +323,13 @@ class Service3
 	// 1) inject* method:
 	private $service1;
 
-	public function injectService1(Service1 $service)
+	public function injectService1(Service1 $service): void
 	{
 		$this->service1 = $service1;
 	}
 
 	// 2) Assign to the variable with the @inject annotation:
-	/** @var \App\Service2 @inject */
+	/** @var Service2 @inject */
 	public $service2;
 }
 \--
@@ -432,10 +432,10 @@ In the presenter, we only have to obtain the factory instance and call the `crea
 /--php
 class UserPresenter extends Nette\Application\UI\Presenter
 {
-	/** @var \App\Components\IUserTableFactory @inject */
+	/** @var IUserTableFactory @inject */
 	public $userTableFactory;
 
-	protected function createComponentUserTable()
+	protected function createComponentUserTable(): UserTable
 	{
 		return $this->userTableFactory->create();
 	}
